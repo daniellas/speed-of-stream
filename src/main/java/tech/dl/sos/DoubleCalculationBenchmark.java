@@ -24,7 +24,7 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 		public void setUp() {
 			Random random = new Random();
 
-			items = random.doubles().mapToObj(i -> i).collect(Collectors.toList());
+			items = random.doubles(size).mapToObj(i -> i).collect(Collectors.toList());
 		}
 	}
 
