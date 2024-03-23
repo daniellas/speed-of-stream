@@ -2,7 +2,7 @@
 
 Java streams API benchmarks
 
-You need `Java 21` and `Apache Maven`
+Install `Java 21` and `Apache Maven`
 
 1. Run `mvn clean install` to produce `jar`
 1. Create `target/results` folder
