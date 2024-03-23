@@ -28,19 +28,16 @@ public class FilterSortDistinctBenchmark extends BenchmarkBase {
 	public static class Params {
 		@Param({"1000", "10000", "100000", "1000000"})
 		public int size;
-
 		public List<Double> items;
-
 		@Setup
 		public void setUp() {
 			Random random = new Random();
-
 			// Generate 500 random values from range MIN >= value < MAX + 5
 			List<Double> values = random.doubles(500, MIN, MAX + 5)
 					.mapToObj(i -> i)
 					.collect(Collectors.toList());
 			// Create list from random numbers within range
-			items = random.ints(values.size())
+			items = random.ints(size, 0, values.size())
 					.mapToObj(values::get)
 					.collect(Collectors.toList());
 		}
@@ -50,30 +47,24 @@ public class FilterSortDistinctBenchmark extends BenchmarkBase {
 	@Benchmark
 	public Collection<Double> forEach(Params params) {
 		Set<Double> set = new HashSet<>();
-
 		for (Double item : params.items) {
 			if (item > MIN && item < MAX) {
 				set.add(item);
 			}
 		}
-
 		List<Double> res = new ArrayList<>(set);
-
 		Collections.sort(res);
-
 		return res;
 	}
 	// Using forEach and TreeSet
 	@Benchmark
 	public Collection<Double> forEachTreeSet(Params params) {
 		Set<Double> set = new TreeSet<>();
-
 		for (Double item : params.items) {
 			if (item > MIN && item < MAX) {
 				set.add(item);
 			}
 		}
-
 		return set;
 	}
 	// Using collect

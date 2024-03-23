@@ -24,13 +24,10 @@ public class GroupBenchmark extends BenchmarkBase {
 	public static class Params {
 		@Param({"1000", "10000", "100000", "1000000"})
 		public int size;
-
 		public List<Double> items;
-
 		@Setup
 		public void setUp() {
 			Random random = new Random();
-
 			items = random.doubles(size)
 					.mapToObj(i -> i)
 					.collect(Collectors.toList());

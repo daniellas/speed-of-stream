@@ -24,11 +24,12 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 		public void setUp() {
 			Random random = new Random();
 
-			items = random.doubles(size).mapToObj(i -> i).collect(Collectors.toList());
+			items = random.doubles(size).mapToObj(i -> i)
+					.collect(Collectors.toList());
 		}
 	}
 
-	// This is our calculation, takes Double type number, calculates logarithm,
+	// This is our calculation, takes double type number, calculates logarithm,
 	// then sine and then square root
 	private static double calculate(double value) {
 		return Math.sqrt(Math.sin(Math.log(value)));
