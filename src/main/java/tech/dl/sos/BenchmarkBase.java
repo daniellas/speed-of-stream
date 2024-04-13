@@ -12,7 +12,7 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 public abstract class BenchmarkBase {
 
-	protected void runBenchmark() throws RunnerException {
+	protected void runBenchmark(String profile) throws RunnerException {
 		Options options = new OptionsBuilder()
 				// Add class with methods annotated with @Benchmark
 				.include(this.getClass().getSimpleName())
@@ -31,7 +31,7 @@ public abstract class BenchmarkBase {
 				// Every 5 seconds long
 				.measurementTime(new TimeValue(5, TimeUnit.SECONDS))
 				// Finally write results to file
-				.result("results/" + reportFile())
+				.result(String.format("results/%s/%s", profile, reportFile()))
 				// In JSON format
 				.resultFormat(ResultFormatType.JSON)
 				.build();
