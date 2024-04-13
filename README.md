@@ -1,6 +1,6 @@
 # Speed of stream
 
-Java streams API benchmarks
+Java streams API benchmarks described in my article on [Medium](https://medium.com/@daniel.las/speed-of-java-stream-1cc3a94b44c2)
 
 Install `Java 21` and `Apache Maven`
 
