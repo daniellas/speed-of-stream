@@ -1,5 +1,6 @@
 package tech.dl.sos;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Mode;
@@ -13,6 +14,10 @@ import org.openjdk.jmh.runner.options.TimeValue;
 public abstract class BenchmarkBase {
 
 	protected void runBenchmark(String profile) throws RunnerException {
+		String resultsDir = String.format("results/%s", profile);
+
+		new File(resultsDir).mkdirs();
+
 		Options options = new OptionsBuilder()
 				// Add class with methods annotated with @Benchmark
 				.include(this.getClass().getSimpleName())
@@ -31,7 +36,7 @@ public abstract class BenchmarkBase {
 				// Every 5 seconds long
 				.measurementTime(new TimeValue(5, TimeUnit.SECONDS))
 				// Finally write results to file
-				.result(String.format("results/%s/%s", profile, reportFile()))
+				.result(String.format("%s/%s", resultsDir, reportFile()))
 				// In JSON format
 				.resultFormat(ResultFormatType.JSON)
 				.build();
