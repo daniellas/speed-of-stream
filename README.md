@@ -9,7 +9,3 @@ Install `Java 21` and `Apache Maven`
    - where `profile` is the JVM arguments profile name (`default` is used if not defined)
 
 Go to [jupyterlab](jupyterlab) to find out how to view the results.
-
-# Results
-
-![Chart](jupyterlab/img/default/benchmark-streams-sum-int.png)
