@@ -12,4 +12,4 @@ Go to [jupyterlab](jupyterlab) to find out how to view the results.
 
 # Results
 
-!(jupyterlab/img/default/benchmark-streams-sum-int.png)
+![Chart](jupyterlab/img/default/benchmark-streams-sum-int.png)
