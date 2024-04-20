@@ -10,3 +10,5 @@ python -m venv venv
 venv/bin/pip install -r requirements.txt
 venv/bin/jupyter lab
 ```
+
+Download [results in HTML format](results.html).
