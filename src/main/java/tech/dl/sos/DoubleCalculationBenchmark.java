@@ -1,5 +1,7 @@
 package tech.dl.sos;
 
+import static tech.dl.sos.Operations.calculate;
+
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -29,12 +31,6 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 		}
 	}
 
-	// This is our calculation, takes double type number, calculates logarithm,
-	// then sine and then square root
-	private static double calculate(double value) {
-		return Math.sqrt(Math.sin(Math.log(value)));
-	}
-
 	// Using forEach
 	@Benchmark
 	public Double forEach(Params params) {
@@ -50,14 +46,14 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 	@Benchmark
 	public Double collect(Params params) {
 		return params.items.stream()
-				.map(DoubleCalculationBenchmark::calculate)
+				.map(Operations::calculate)
 				.collect(Collectors.summingDouble(i -> i));
 	}
 	// Using collect with summing collector on parallel stream
 	@Benchmark
 	public Double collectPar(Params params) {
 		return params.items.parallelStream()
-				.map(DoubleCalculationBenchmark::calculate)
+				.map(Operations::calculate)
 				.collect(Collectors.summingDouble(i -> i));
 	}
 
@@ -65,14 +61,14 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 	@Benchmark
 	public Double reduce(Params params) {
 		return params.items.stream()
-				.map(DoubleCalculationBenchmark::calculate)
+				.map(Operations::calculate)
 				.reduce(0d, Double::sum);
 	}
 	// Using reduce on parallel stream
 	@Benchmark
 	public Double reducePar(Params params) {
 		return params.items.parallelStream()
-				.map(DoubleCalculationBenchmark::calculate)
+				.map(Operations::calculate)
 				.reduce(0d, Double::sum);
 	}
 

@@ -11,4 +11,6 @@ venv/bin/pip install -r requirements.txt
 venv/bin/jupyter lab
 ```
 
-Download [results in HTML format](results.html).
+Download [Speed Of Stream results in HTML format](results_sos.html)
+
+Download [Performance Of Parallel Stream results in HTML format](results_pops.html)
