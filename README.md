@@ -2,7 +2,8 @@
 
 Java streams API benchmarks described in my articles on medium.com:
 
-* [Speed Of Stream](https://medium.com/@daniel.las/speed-of-java-stream-1cc3a94b44c2)
+* [Speed of Stream](https://medium.com/@daniel.las/speed-of-java-stream-1cc3a94b44c2)
+* [Performance of Parallel Stream](https://medium.com/@daniel.las/performance-of-parallel-java-streams-68988191d9f8)
 
 Install `Java 21` and `Apache Maven`
 
