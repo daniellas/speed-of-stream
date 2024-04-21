@@ -33,60 +33,60 @@ public class ParallelDoubleCalculationBenchmark extends BenchmarkBase {
 					.collect(Collectors.toList());
 		}
 	}
-
+	// This is actual benchmarked operation running calculation against every
+	// item in the list in parallel
+	private static Double operation(List<Double> items) {
+		return items.parallelStream()
+				.map(Operations::calculate)
+				.reduce(0d, Double::sum);
+	}
 	// Benchmarks for other threads counts are omitted for brevity
 	@Threads(2)
 	@Benchmark
 	public Double benchmarkA(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(4)
 	@Benchmark
 	public Double benchmarkB(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(6)
 	@Benchmark
 	public Double benchmarkC(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(8)
 	@Benchmark
 	public Double benchmarkD(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(10)
 	@Benchmark
 	public Double benchmarkE(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(12)
 	@Benchmark
 	public Double benchmarkF(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(14)
 	@Benchmark
 	public Double benchmarkG(Params params) {
-		return benchmark(params);
+		return operation(params.items);
 	}
 
 	@Threads(16)
 	@Benchmark
 	public Double benchmarkH(Params params) {
-		return benchmark(params);
-	}
-
-	private Double benchmark(Params params) {
-		return params.items.parallelStream()
-				.map(Operations::calculate)
-				.reduce(0d, Double::sum);
+		return operation(params.items);
 	}
 
 	@Override

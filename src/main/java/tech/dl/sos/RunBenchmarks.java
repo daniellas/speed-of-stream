@@ -1,6 +1,7 @@
 package tech.dl.sos;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +16,12 @@ import org.openjdk.jmh.runner.RunnerException;
 
 import lombok.extern.slf4j.Slf4j;
 import tech.dl.sos.parallel.ParallelDoubleCalculationBenchmark;
+import tech.dl.sos.parallel.ParallelFilterSortDistinctBenchmark;
+import tech.dl.sos.parallel.ParallelGroupBenchmark;
+import tech.dl.sos.parallel.ParallelGroupConcurrentBenchmark;
 import tech.dl.sos.parallel.SequentialDoubleCalculationBenchmark;
+import tech.dl.sos.parallel.SequentialFilterSortDistinctBenchmark;
+import tech.dl.sos.parallel.SequentialGroupBenchmark;
 
 @Slf4j
 public class RunBenchmarks {
@@ -24,10 +30,25 @@ public class RunBenchmarks {
 	private static final Option INCLUDE_OPT = Option.builder("i").hasArgs().build();
 	private static final Option EXCLUDE_OPT = Option.builder("e").hasArgs().build();
 
+	private static List<BenchmarkBase> BENCHMARKS = Arrays.asList(
+			new IntegerSumBenchmark(),
+			new DoubleCalculationBenchmark(),
+			new GroupBenchmark(),
+			new FilterSortDistinctBenchmark(),
+			new SequentialDoubleCalculationBenchmark(),
+			new ParallelDoubleCalculationBenchmark(),
+			new SequentialGroupBenchmark(),
+			new ParallelGroupBenchmark(),
+			new ParallelGroupConcurrentBenchmark(),
+			new SequentialFilterSortDistinctBenchmark(),
+			new ParallelFilterSortDistinctBenchmark());
+
 	public static void main(String[] args) throws ParseException {
 		Options options = new Options();
 
-		options.addOption(EXCLUDE_OPT).addOption(INCLUDE_OPT).addOption(PROFILE_OPT);
+		options.addOption(PROFILE_OPT)
+				.addOption(EXCLUDE_OPT)
+				.addOption(INCLUDE_OPT);
 
 		DefaultParser parser = new DefaultParser();
 
@@ -35,43 +56,39 @@ public class RunBenchmarks {
 			CommandLine cmd = parser.parse(options, args);
 			String profile = profile(cmd);
 
-			if (!isIncluded(cmd, IntegerSumBenchmark.class)) {
-				new IntegerSumBenchmark().runBenchmark(profile);
-			}
-			if (!isIncluded(cmd, DoubleCalculationBenchmark.class)) {
-				new DoubleCalculationBenchmark().runBenchmark(profile);
-			}
-			if (!isIncluded(cmd, GroupBenchmark.class)) {
-				new GroupBenchmark().runBenchmark(profile);
-			}
-			if (!isIncluded(cmd, FilterSortDistinctBenchmark.class)) {
-				new FilterSortDistinctBenchmark().runBenchmark(profile);
-			}
-
-			if (!isIncluded(cmd, SequentialDoubleCalculationBenchmark.class)) {
-				new SequentialDoubleCalculationBenchmark().runBenchmark(profile);
-			}
-			if (!isIncluded(cmd, ParallelDoubleCalculationBenchmark.class)) {
-				new ParallelDoubleCalculationBenchmark().runBenchmark(profile);
-			}
-		} catch (RunnerException e) {
+			BENCHMARKS.stream()
+					.filter(benchmark -> isIncluded(cmd, benchmark))
+					.forEach(benchmark -> {
+						try {
+							benchmark.runBenchmark(profile);
+						} catch (RunnerException be) {
+							throw new RuntimeException(be);
+						}
+					});
+		} catch (Exception e) {
 			log.error("Benchmark run failed", e);
 		}
 	}
 
-	private static boolean isIncluded(CommandLine cmd, Class<? extends BenchmarkBase> benchmarkCls) {
-		String benchmark = benchmarkCls.getSimpleName().replace("Benchmark", "");
-		
-		Set<String> excludes = Optional.ofNullable(cmd.getOptionValues(EXCLUDE_OPT))
+	private static boolean isIncluded(CommandLine cmd, BenchmarkBase benchmark) {
+		String benchmarkName = benchmark.getClass().getSimpleName();
+		Set<String> exclusions = Optional.ofNullable(cmd.getOptionValues(EXCLUDE_OPT))
 				.map(Arrays::stream)
 				.orElse(Stream.empty())
 				.collect(Collectors.toSet());
-		Set<String> includes = Optional.ofNullable(cmd.getOptionValues(INCLUDE_OPT))
+		Set<String> inclusions = Optional.ofNullable(cmd.getOptionValues(INCLUDE_OPT))
 				.map(Arrays::stream)
 				.orElse(Stream.empty())
 				.collect(Collectors.toSet());
 
-		return !excludes.contains(benchmark) || (!includes.isEmpty() && includes.contains(benchmark));
+		if (exclusions.contains(benchmarkName)) {
+			return false;
+		}
+		if (!inclusions.isEmpty()) {
+			return inclusions.contains(benchmarkName);
+		}
+
+		return true;
 	}
 
 	private static String profile(CommandLine cmd) {

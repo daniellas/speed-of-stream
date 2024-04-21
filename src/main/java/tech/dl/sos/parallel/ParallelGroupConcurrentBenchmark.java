@@ -1,6 +1,7 @@
 package tech.dl.sos.parallel;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -12,9 +13,11 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 
 import tech.dl.sos.BenchmarkBase;
-import tech.dl.sos.Operations;
 
-public class SequentialDoubleCalculationBenchmark extends BenchmarkBase {
+public class ParallelGroupConcurrentBenchmark extends BenchmarkBase {
+
+	// This is grouping divisor value
+	static final double DIVISOR = 100.0;
 
 	// Benchmark parameters
 	@State(Scope.Benchmark)
@@ -25,68 +28,70 @@ public class SequentialDoubleCalculationBenchmark extends BenchmarkBase {
 		@Setup
 		public void setUp() {
 			Random random = new Random();
-			items = random.doubles(size).mapToObj(i -> i)
+			items = random.doubles(size)
+					.mapToObj(i -> i)
 					.collect(Collectors.toList());
 		}
 	}
-	// This is actual benchmarked operation running calculation against every
-	// item in the list
-	private static Double operation(List<Double> items) {
-		return items.stream()
-				.map(Operations::calculate)
-				.reduce(0d, Double::sum);
+	// This is actual benchmarked operation with parallel stream and concurrent
+	// collector
+	private Map<Long, List<Double>> operation(List<Double> items) {
+		return items.parallelStream()
+				.collect(Collectors.groupingByConcurrent(n -> Math.round(n / DIVISOR)));
 	}
+
 	@Threads(2)
 	@Benchmark
-	public Double benchmarkA(Params params) {
+	public Map<Long, List<Double>> benchmarkA(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(4)
 	@Benchmark
-	public Double benchmarkB(Params params) {
+	public Map<Long, List<Double>> benchmarkB(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(6)
 	@Benchmark
-	public Double benchmarkC(Params params) {
+	public Map<Long, List<Double>> benchmarkC(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(8)
 	@Benchmark
-	public Double benchmarkD(Params params) {
+	public Map<Long, List<Double>> benchmarkD(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(10)
 	@Benchmark
-	public Double benchmarkE(Params params) {
+	public Map<Long, List<Double>> benchmarkE(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(12)
 	@Benchmark
-	public Double benchmarkF(Params params) {
+	public Map<Long, List<Double>> benchmarkF(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(14)
 	@Benchmark
-	public Double benchmarkG(Params params) {
+	public Map<Long, List<Double>> benchmarkG(Params params) {
 		return operation(params.items);
 	}
 
 	@Threads(16)
 	@Benchmark
-	public Double benchmarkH(Params params) {
+	public Map<Long, List<Double>> benchmarkH(Params params) {
 		return operation(params.items);
 	}
 
+
 	@Override
 	protected String reportFile() {
-		return "benchmark-threads-streams-sum-double-calculation-sequential.json";
+		return "benchmark-threads-streams-group-parallel-concurrent.json";
 	}
 
 }
