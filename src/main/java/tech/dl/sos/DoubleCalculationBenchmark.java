@@ -20,6 +20,7 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 		public int size;
 
 		public List<Double> items;
+		public Double[] itemsArray;
 
 		// We generate pseudo random doubles
 		@Setup
@@ -28,9 +29,22 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 
 			items = random.doubles(size).mapToObj(i -> i)
 					.collect(Collectors.toList());
+			itemsArray = new Double[size];
+			items.toArray(itemsArray);
 		}
 	}
 
+	// Counting loop implementation over array
+	@Benchmark
+	public Double forCountLoop(IntegerSumBenchmark.Params params) {
+		Double res = 0d;
+
+		for (int i = 0; i < params.size; i++) {
+			res += calculate(params.itemsArray[i]);
+		}
+
+		return res;
+	}
 	// Using forEach
 	@Benchmark
 	public Double forEach(Params params) {
