@@ -19,12 +19,26 @@ public class IntegerSumBenchmark extends BenchmarkBase {
 		public int size;
 		// Items to run benchmark on
 		public List<Integer> items;
+		public Integer[] itemsArray;
 		// Setup test data, will be run once and will not affect our results
 		@Setup
 		public void setUp() {
 			items = IntStream.range(0, size).mapToObj(i -> i)
 					.collect(Collectors.toList());
+			itemsArray = new Integer[size];
+			items.toArray(itemsArray);
 		}
+	}
+	// Counting loop implementation over array
+	@Benchmark
+	public int forCountLoop(Params params) {
+		int res = 0;
+
+		for (int i = 0; i < params.size; i++) {
+			res += params.itemsArray[i];
+		}
+
+		return res;
 	}
 	// Plain old forEach implementation
 	@Benchmark
