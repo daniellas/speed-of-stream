@@ -25,8 +25,11 @@ public class IntegerSumBenchmark extends BenchmarkBase {
 		public void setUp() {
 			items = IntStream.range(0, size).mapToObj(i -> i)
 					.collect(Collectors.toList());
-			itemsArray = new Integer[size];
-			items.toArray(itemsArray);
+			itemsArray = itemsAsArray();
+		}
+
+		public Integer[] itemsAsArray() {
+			return items.toArray(Integer[]::new);
 		}
 	}
 	// Counting loop implementation over array
@@ -36,6 +39,18 @@ public class IntegerSumBenchmark extends BenchmarkBase {
 
 		for (int i = 0; i < params.size; i++) {
 			res += params.itemsArray[i];
+		}
+
+		return res;
+	}
+	// Counting loop implementation over array with conversion
+	@Benchmark
+	public Integer forCountLoopWithConversion(Params params) {
+		Integer[] itemsArray = params.itemsAsArray();
+		Integer res = 0;
+
+		for (int i = 0; i < params.size; i++) {
+			res += itemsArray[i];
 		}
 
 		return res;

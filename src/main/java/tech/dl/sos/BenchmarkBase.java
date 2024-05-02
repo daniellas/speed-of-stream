@@ -20,7 +20,7 @@ public abstract class BenchmarkBase {
 
 		Options options = new OptionsBuilder()
 				// Add class with methods annotated with @Benchmark
-				.include(this.getClass().getSimpleName())
+				.include(this.getClass().getName())
 				// Use only one fork, single benchmark will be executed at once
 				.forks(1)
 				// Measure number of operations

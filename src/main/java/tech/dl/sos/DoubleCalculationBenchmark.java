@@ -26,21 +26,33 @@ public class DoubleCalculationBenchmark extends BenchmarkBase {
 		@Setup
 		public void setUp() {
 			Random random = new Random();
-
 			items = random.doubles(size).mapToObj(i -> i)
 					.collect(Collectors.toList());
-			itemsArray = new Double[size];
-			items.toArray(itemsArray);
+			itemsArray = itemsAsArray();
+		}
+		public Double[] itemsAsArray() {
+			return items.toArray(Double[]::new);
 		}
 	}
-
 	// Counting loop implementation over array
 	@Benchmark
-	public Double forCountLoop(IntegerSumBenchmark.Params params) {
+	public Double forCountLoop(Params params) {
 		Double res = 0d;
 
 		for (int i = 0; i < params.size; i++) {
 			res += calculate(params.itemsArray[i]);
+		}
+
+		return res;
+	}
+	// Counting loop implementation over array with conversion
+	@Benchmark
+	public Double forCountLoopWithConversion(Params params) {
+		Double[] itemsArray = params.itemsAsArray();
+		Double res = 0d;
+
+		for (int i = 0; i < params.size; i++) {
+			res += calculate(itemsArray[i]);
 		}
 
 		return res;

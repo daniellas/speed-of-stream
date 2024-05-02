@@ -30,7 +30,9 @@ public class RunBenchmarks {
 	private static final Option INCLUDE_OPT = Option.builder("i").hasArgs().build();
 	private static final Option EXCLUDE_OPT = Option.builder("e").hasArgs().build();
 
-	private static List<BenchmarkBase> BENCHMARKS = Arrays.asList(
+	private static final Options OPTIONS = new Options();
+
+	static List<BenchmarkBase> BENCHMARKS = Arrays.asList(
 			new IntegerSumBenchmark(),
 			new DoubleCalculationBenchmark(),
 			new GroupBenchmark(),
@@ -43,21 +45,18 @@ public class RunBenchmarks {
 			new SequentialFilterSortDistinctBenchmark(),
 			new ParallelFilterSortDistinctBenchmark());
 
-	public static void main(String[] args) throws ParseException {
-		Options options = new Options();
-
-		options.addOption(PROFILE_OPT)
+	static {
+		OPTIONS.addOption(PROFILE_OPT)
 				.addOption(EXCLUDE_OPT)
 				.addOption(INCLUDE_OPT);
 
-		DefaultParser parser = new DefaultParser();
-
+	}
+	public static void main(String[] args) throws ParseException {
 		try {
-			CommandLine cmd = parser.parse(options, args);
+			CommandLine cmd = parseCommandLineArgs(args);
 			String profile = profile(cmd);
 
-			BENCHMARKS.stream()
-					.filter(benchmark -> isIncluded(cmd, benchmark))
+			selectBenchmarks(cmd)
 					.forEach(benchmark -> {
 						try {
 							benchmark.runBenchmark(profile);
@@ -68,6 +67,16 @@ public class RunBenchmarks {
 		} catch (Exception e) {
 			log.error("Benchmark run failed", e);
 		}
+	}
+
+	static CommandLine parseCommandLineArgs(String[] args) throws ParseException {
+		return new DefaultParser().parse(OPTIONS, args);
+	}
+
+	static List<BenchmarkBase> selectBenchmarks(CommandLine cmd) {
+		return BENCHMARKS.stream()
+				.filter(benchmark -> isIncluded(cmd, benchmark))
+				.collect(Collectors.toList());
 	}
 
 	private static boolean isIncluded(CommandLine cmd, BenchmarkBase benchmark) {

@@ -41,8 +41,10 @@ public class FilterSortDistinctBenchmark extends BenchmarkBase {
 			items = random.ints(size, 0, values.size())
 					.mapToObj(values::get)
 					.collect(Collectors.toList());
-			itemsArray = new Double[size];
-			items.toArray(itemsArray);
+			itemsArray = itemsAsArray();
+		}
+		public Double[] itemsAsArray() {
+			return items.toArray(Double[]::new);
 		}
 	}
 
@@ -50,9 +52,23 @@ public class FilterSortDistinctBenchmark extends BenchmarkBase {
 	@Benchmark
 	public Collection<Double> forCountLoop(Params params) {
 		Set<Double> set = new HashSet<>();
-		Double item;
 		for (int i = 0; i < params.size; i++) {
-			item = params.itemsArray[i];
+			Double item = params.itemsArray[i];
+			if (item > MIN && item < MAX) {
+				set.add(item);
+			}
+		}
+		List<Double> res = new ArrayList<>(set);
+		Collections.sort(res);
+		return res;
+	}
+	// Counting loop implementation over array with conversion
+	@Benchmark
+	public Collection<Double> forCountLoopWithConversion(Params params) {
+		Double[] itemsArray = params.itemsAsArray();
+		Set<Double> set = new HashSet<>();
+		for (int i = 0; i < params.size; i++) {
+			Double item = itemsArray[i];
 			if (item > MIN && item < MAX) {
 				set.add(item);
 			}

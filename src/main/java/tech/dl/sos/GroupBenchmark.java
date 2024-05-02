@@ -25,13 +25,62 @@ public class GroupBenchmark extends BenchmarkBase {
 		@Param({"1000", "10000", "100000", "1000000"})
 		public int size;
 		public List<Double> items;
+		public Double[] itemsArray;
 		@Setup
 		public void setUp() {
 			Random random = new Random();
 			items = random.doubles(size)
 					.mapToObj(i -> i)
 					.collect(Collectors.toList());
+			itemsArray = itemsAsArray();
 		}
+		public Double[] itemsAsArray() {
+			return items.toArray(Double[]::new);
+		}
+	}
+
+	// Counting loop implementation over array
+	@Benchmark
+	public Map<Long, List<Double>> forCountLoop(Params params) {
+		Map<Long, List<Double>> res = new HashMap<>();
+
+		for (int i = 0; i < params.size; i++) {
+			Double item = params.itemsArray[i];
+			Long key = Math.round(item / DIVISOR);
+			List<Double> list = res.get(key);
+
+			if (list != null) {
+				list.add(item);
+			} else {
+				list = new ArrayList<>();
+				list.add(item);
+				res.put(key, list);
+			}
+		}
+
+		return res;
+	}
+	// Counting loop implementation over array with conversion
+	@Benchmark
+	public Map<Long, List<Double>> forCountLoopWithConversion(Params params) {
+		Double[] itemsArray = params.itemsAsArray();
+		Map<Long, List<Double>> res = new HashMap<>();
+
+		for (int i = 0; i < params.size; i++) {
+			Double item = itemsArray[i];
+			Long key = Math.round(item / DIVISOR);
+			List<Double> list = res.get(key);
+
+			if (list != null) {
+				list.add(item);
+			} else {
+				list = new ArrayList<>();
+				list.add(item);
+				res.put(key, list);
+			}
+		}
+
+		return res;
 	}
 
 	// Using forEach
