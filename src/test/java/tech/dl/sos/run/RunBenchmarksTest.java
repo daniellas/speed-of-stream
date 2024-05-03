@@ -1,4 +1,4 @@
-package tech.dl.sos;
+package tech.dl.sos.run;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.jupiter.api.Test;
+
+import tech.dl.sos.DoubleCalculationBenchmark;
+import tech.dl.sos.IntegerSumBenchmark;
 
 public class RunBenchmarksTest {
 

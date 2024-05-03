@@ -1,4 +1,4 @@
-package tech.dl.sos;
+package tech.dl.sos.run;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +15,10 @@ import org.apache.commons.cli.ParseException;
 import org.openjdk.jmh.runner.RunnerException;
 
 import lombok.extern.slf4j.Slf4j;
+import tech.dl.sos.DoubleCalculationBenchmark;
+import tech.dl.sos.FilterSortDistinctBenchmark;
+import tech.dl.sos.GroupBenchmark;
+import tech.dl.sos.IntegerSumBenchmark;
 import tech.dl.sos.parallel.ParallelDoubleCalculationBenchmark;
 import tech.dl.sos.parallel.ParallelFilterSortDistinctBenchmark;
 import tech.dl.sos.parallel.ParallelGroupBenchmark;
@@ -54,7 +58,7 @@ public class RunBenchmarks {
 	public static void main(String[] args) throws ParseException {
 		try {
 			CommandLine cmd = parseCommandLineArgs(args);
-			String profile = profile(cmd);
+			Profile profile = profile(cmd);
 
 			selectBenchmarks(cmd)
 					.forEach(benchmark -> {
@@ -100,8 +104,10 @@ public class RunBenchmarks {
 		return true;
 	}
 
-	private static String profile(CommandLine cmd) {
-		return Optional.ofNullable(cmd.getOptionValue(PROFILE_OPT)).orElse("default");
+	private static Profile profile(CommandLine cmd) {
+		return Optional.ofNullable(cmd.getOptionValue(PROFILE_OPT))
+				.map(Profile::valueOf)
+				.orElse(Profile.DEFAULT);
 	}
 
 }

@@ -1,4 +1,4 @@
-package tech.dl.sos;
+package tech.dl.sos.run;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +13,7 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 public abstract class BenchmarkBase {
 
-	protected void runBenchmark(String profile) throws RunnerException {
+	protected void runBenchmark(Profile profile) throws RunnerException {
 		String resultsDir = String.format("results/%s", profile);
 
 		new File(resultsDir).mkdirs();
@@ -21,6 +21,8 @@ public abstract class BenchmarkBase {
 		Options options = new OptionsBuilder()
 				// Add class with methods annotated with @Benchmark
 				.include(this.getClass().getName())
+				// Set JVM arguments
+				.jvmArgs(profile.getJvmArgs())
 				// Use only one fork, single benchmark will be executed at once
 				.forks(1)
 				// Measure number of operations

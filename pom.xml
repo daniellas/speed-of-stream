@@ -19,7 +19,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<jmh.version>1.23</jmh.version>
-		<start-class>tech.dl.sos.RunBenchmarks</start-class>
+		<start-class>tech.dl.sos.run/RunBenchmarks</start-class>
 	</properties>
 
 	<dependencies>

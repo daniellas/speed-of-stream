@@ -12,6 +12,8 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
+import tech.dl.sos.run.BenchmarkBase;
+
 public class DoubleCalculationBenchmark extends BenchmarkBase {
 	// Benchmark parameters
 	@State(Scope.Benchmark)

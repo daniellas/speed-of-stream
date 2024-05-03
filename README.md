@@ -9,6 +9,11 @@ Install `Java 21` and `Apache Maven`
 
 1. Run `mvn clean install` to produce `jar`
 1. Run `java -jar target/speed-of-stream.jar -p [profile]` to run benchmarks
-   - where `profile` is the JVM arguments profile name (`default` is used if not defined)
+   - where `profile` is the JVM arguments profile name (`DEFAULT` is used if not defined)
+
+Available profiles:
+
+- `DEFAULT` - 2GB of available memory via `-Xms` and `-Xmx`
+- `NOJIT` - `DEFAULT` with disabled JIT compiler via `-Xint`
 
 Go to [jupyterlab](jupyterlab) to find out how to view the results.

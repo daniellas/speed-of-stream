@@ -11,8 +11,8 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 
-import tech.dl.sos.BenchmarkBase;
 import tech.dl.sos.Operations;
+import tech.dl.sos.run.BenchmarkBase;
 
 public class SequentialDoubleCalculationBenchmark extends BenchmarkBase {
 
