@@ -5,12 +5,20 @@ import plotly.express as px
 def extract_benchmark_method(benchmark):
     return benchmark.split('.')[-1]
 
-def load_results(profile, benchmark,excludes=[]):
+def benchmark_method_selector(excludes,includes):
+    if excludes:
+        return lambda r: r not in excludes
+    if includes:
+        return lambda r: r in includes
+
+    return lambda _: True
+
+def load_results(profile, benchmark,excludes=[],includes=[]):
     with open(f'results/{profile}/{benchmark}.json') as file:
         results = json.load(file)
         scores_raw = [(extract_benchmark_method(i['benchmark']),i['params']['size'],i['primaryMetric']['score']) for i in results]
         scores = pd.DataFrame(data=scores_raw,columns=['benchmark','size','score'])
-        scores = scores.loc[scores.benchmark.apply(lambda r: r not in excludes)]
+        scores = scores.loc[scores.benchmark.apply(benchmark_method_selector(excludes,includes))]
         max_scores_by_size = scores.groupby(['size']).max()
         scores_pct = scores.join(max_scores_by_size,on='size',rsuffix='_max').drop(columns='benchmark_max')
         scores_pct['score_pct'] = scores_pct['score'].divide(scores_pct['score_max']).multiply(100)
